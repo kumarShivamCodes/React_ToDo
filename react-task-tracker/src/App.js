@@ -2,12 +2,22 @@ import React from "react";
 import Header from "./components/Header";
 import Tasks from "./components/Tasks";
 import AddTask from "./components/AddTask";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 function App() {
+  let initTask;
+  if (localStorage.getItem("tasks") == null) {
+    initTask = [];
+  } else {
+    initTask = JSON.parse(localStorage.getItem("tasks"));
+  }
+
   const [showAddTask, setShowAddTask] = useState(false);
 
-  const [tasks, setTasks] = useState([]);
+  const [tasks, setTasks] = useState(initTask);
+  useEffect(() => {
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+  }, [tasks]);
 
   //Add Task
   const addTask = (task) => {
@@ -22,6 +32,7 @@ function App() {
   const deleteTask = (id) => {
     const newTask = tasks.filter((t) => t.id !== id);
     setTasks(newTask);
+    localStorage.setItem("tasks", JSON.stringify(newTask));
   };
 
   //Toggle Reminder
